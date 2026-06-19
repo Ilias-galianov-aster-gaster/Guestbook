@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Подтверждение удаления</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>⚠️ Удалить все сообщения?</h1>
+        <p>Это действие нельзя отменить. Вы уверены?</p>
+        <form method="POST" action="/delete-all-confirm">
+            <button type="submit" class="danger-btn">Да, удалить всё</button>
+            <a href="/" class="cancel-btn">Отмена</a>
+        </form>
+    </div>
+</body>
+</html>

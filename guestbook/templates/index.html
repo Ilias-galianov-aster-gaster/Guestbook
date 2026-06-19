@@ -7,27 +7,31 @@
 </head>
 <body>
     <div class="container">
-        <!-- Заголовок с иконкой (задание Б) -->
         <h1>📖 Гостевая книга</h1>
 
-        <!-- Уведомление об успехе (задание В) -->
-        {% if success %}
-            <div class="notification success">{{ success }}</div>
-        {% endif %}
+        <!-- Счётчик (задание 6) -->
+        <p class="counter">Всего сообщений: {{ total_count }}</p>
 
-        <!-- Уведомление об ошибке (задание Г) -->
-        {% if error %}
-            <div class="notification error">{{ error }}</div>
-        {% endif %}
+        <!-- Ссылки для сортировки (задание А) -->
+        <div class="sort-links">
+            <a href="/sort/newest">📅 Сначала новые</a> |
+            <a href="/sort/oldest">📅 Сначала старые</a>
+        </div>
 
         <h2>💬 Сообщения</h2>
 
         {% if messages %}
             {% for msg in messages %}
-                <!-- Чередование фона (задание А) -->
-                <div class="message {% if loop.index0 % 2 == 0 %}message-even{% else %}message-odd{% endif %}">
+                <!-- Чередование фона (из пр10) + свежесть (задание Б) -->
+                <div class="message {% if loop.index0 % 2 == 0 %}message-even{% else %}message-odd{% endif %}
+                            {% if msg.created_at == today %}fresh{% endif %}">
                     <strong>👤 {{ msg.name }}</strong>
-                    <small>📅 {{ msg.created_at|ru_date }}</small>   <!-- дата по-русски (Д) -->
+                    <small>📅 {{ msg.created_at|ru_date }}</small>
+
+                    <!-- Кнопка удаления (задание 3) с подтверждением (задание 4) -->
+                    <a href="/delete/{{ msg.id }}" class="delete-btn"
+                       onclick="return confirm('Удалить сообщение?')">🗑️ Удалить</a>
+
                     <p>{{ msg.message }}</p>
                 </div>
             {% endfor %}
@@ -35,15 +39,19 @@
             <p>Пока нет сообщений. Будьте первым! 🥇</p>
         {% endif %}
 
+        <!-- Форма добавления -->
         <div class="add-form">
             <h2>✍️ Оставить сообщение</h2>
             <form method="POST" action="/add">
-                <input type="text" name="name" placeholder="Ваше имя" 
-                       class="{% if error %}input-error{% endif %}" required>
-                <textarea name="message" placeholder="Ваше сообщение" rows="4"
-                          class="{% if error %}input-error{% endif %}" required></textarea>
+                <input type="text" name="name" placeholder="Ваше имя" required>
+                <textarea name="message" placeholder="Ваше сообщение" rows="4" required></textarea>
                 <button type="submit">✉️ Отправить</button>
             </form>
+        </div>
+
+        <!-- Ссылка на удаление всех (задание В) -->
+        <div class="danger-zone">
+            <a href="/delete-all" class="delete-all-btn">⚠️ Удалить все сообщения</a>
         </div>
     </div>
 </body>
