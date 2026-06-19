@@ -1,16 +1,18 @@
 from flask import Flask, render_template, request, redirect, session
 from database import (
     init_db, get_all_messages, add_message,
-    delete_message, get_message_count, delete_all_messages
+    delete_message, get_message_count, delete_all_messages,
+    check_user
 )
 from datetime import date
+import datetime
 
 app = Flask(__name__)
-app.secret_key = 'supersecretkey'  # для сессий (если понадобится)
+app.secret_key = 'supersecretkey_for_guestbook'
 
 init_db()
 
-# ---------- Фильтр для даты по-русски (из пр10, оставим) ----------
+# ---------- Фильтр даты ----------
 @app.template_filter('ru_date')
 def ru_date_filter(date_str):
     try:
@@ -24,56 +26,100 @@ def ru_date_filter(date_str):
     except:
         return date_str
 
-# ---------- Главная страница (задание 6 - счётчик) ----------
+# ---------- ГЛАВНАЯ СТРАНИЦА (меню) ----------
 @app.route('/')
-def index():
-    messages = get_all_messages('DESC')  # по умолчанию новые сверху
-    total_count = get_message_count()
-    today = date.today().isoformat()     # для выделения свежих (задание Б)
-    return render_template('index.html',
-                           messages=messages,
-                           total_count=total_count,
-                           today=today)
+def home():
+    return render_template('index.html')
 
-# ---------- Сортировка (задание А) ----------
+# ---------- ГОСТЕВАЯ КНИГА ----------
+@app.route('/guestbook')
+def guestbook():
+    messages = get_all_messages('DESC')
+    total_count = get_message_count()
+    today = date.today().isoformat()
+    logged_in = session.get('logged_in', False)
+    username = session.get('username')
+    return render_template(
+        'guestbook.html',
+        messages=messages,
+        total_count=total_count,
+        today=today,
+        logged_in=logged_in,
+        username=username
+    )
+
 @app.route('/sort/<order>')
 def sort_messages(order):
     if order not in ['newest', 'oldest']:
-        return redirect('/')
+        return redirect('/guestbook')
     sql_order = 'DESC' if order == 'newest' else 'ASC'
     messages = get_all_messages(sql_order)
     total_count = get_message_count()
     today = date.today().isoformat()
-    return render_template('index.html',
-                           messages=messages,
-                           total_count=total_count,
-                           today=today)
+    logged_in = session.get('logged_in', False)
+    username = session.get('username')
+    return render_template(
+        'guestbook.html',
+        messages=messages,
+        total_count=total_count,
+        today=today,
+        logged_in=logged_in,
+        username=username
+    )
 
-# ---------- Добавление сообщения ----------
 @app.route('/add', methods=['POST'])
 def add():
     name = request.form.get('name', '').strip()
     message = request.form.get('message', '').strip()
     if name and message:
         add_message(name, message)
-    return redirect('/')
+    return redirect('/guestbook')
 
-# ---------- Удаление одного (задание 2) ----------
 @app.route('/delete/<int:message_id>')
 def delete(message_id):
+    if not session.get('logged_in'):
+        return redirect('/login')
     delete_message(message_id)
-    return redirect('/')
+    return redirect('/guestbook')
 
-# ---------- Удаление всех (задание В) ----------
 @app.route('/delete-all')
 def delete_all_page():
-    # Показываем страницу подтверждения
+    if not session.get('logged_in'):
+        return redirect('/login')
     return render_template('delete_all.html')
 
 @app.route('/delete-all-confirm', methods=['POST'])
 def delete_all_confirm():
+    if not session.get('logged_in'):
+        return redirect('/login')
     delete_all_messages()
-    return redirect('/')
+    return redirect('/guestbook')
+
+# ---------- АВТОРИЗАЦИЯ ----------
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = None
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '').strip()
+        if check_user(username, password):
+            session['logged_in'] = True
+            session['username'] = username
+            return redirect('/guestbook')
+        else:
+            error = 'Неверный логин или пароль'
+    return render_template('login.html', error=error)
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    session.pop('username', None)
+    return redirect('/guestbook')
+
+# ---------- BOOTSTRAP ПЕСОЧНИЦА (пр13) ----------
+@app.route('/bootstrap')
+def bootstrap():
+    return render_template('bootstrap.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

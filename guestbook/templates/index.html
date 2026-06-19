@@ -2,56 +2,22 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Гостевая книга</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Практические работы</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>📖 Гостевая книга</h1>
-
-        <!-- Счётчик (задание 6) -->
-        <p class="counter">Всего сообщений: {{ total_count }}</p>
-
-        <!-- Ссылки для сортировки (задание А) -->
-        <div class="sort-links">
-            <a href="/sort/newest">📅 Сначала новые</a> |
-            <a href="/sort/oldest">📅 Сначала старые</a>
-        </div>
-
-        <h2>💬 Сообщения</h2>
-
-        {% if messages %}
-            {% for msg in messages %}
-                <!-- Чередование фона (из пр10) + свежесть (задание Б) -->
-                <div class="message {% if loop.index0 % 2 == 0 %}message-even{% else %}message-odd{% endif %}
-                            {% if msg.created_at == today %}fresh{% endif %}">
-                    <strong>👤 {{ msg.name }}</strong>
-                    <small>📅 {{ msg.created_at|ru_date }}</small>
-
-                    <!-- Кнопка удаления (задание 3) с подтверждением (задание 4) -->
-                    <a href="/delete/{{ msg.id }}" class="delete-btn"
-                       onclick="return confirm('Удалить сообщение?')">🗑️ Удалить</a>
-
-                    <p>{{ msg.message }}</p>
-                </div>
-            {% endfor %}
-        {% else %}
-            <p>Пока нет сообщений. Будьте первым! 🥇</p>
-        {% endif %}
-
-        <!-- Форма добавления -->
-        <div class="add-form">
-            <h2>✍️ Оставить сообщение</h2>
-            <form method="POST" action="/add">
-                <input type="text" name="name" placeholder="Ваше имя" required>
-                <textarea name="message" placeholder="Ваше сообщение" rows="4" required></textarea>
-                <button type="submit">✉️ Отправить</button>
-            </form>
-        </div>
-
-        <!-- Ссылка на удаление всех (задание В) -->
-        <div class="danger-zone">
-            <a href="/delete-all" class="delete-all-btn">⚠️ Удалить все сообщения</a>
+    <div class="container mt-5">
+        <h1 class="text-center">📚 Практические работы</h1>
+        <div class="list-group mt-4">
+            <a href="/guestbook" class="list-group-item list-group-item-action">
+                <h5 class="mb-1">📖 Гостевая книга (пр10–пр12)</h5>
+                <p class="mb-1">Добавление, удаление, авторизация, счётчик, сортировка</p>
+            </a>
+            <a href="/bootstrap" class="list-group-item list-group-item-action">
+                <h5 class="mb-1">🎨 Bootstrap песочница (пр13)</h5>
+                <p class="mb-1">Кнопки, карточки, сетка, формы, иконки</p>
+            </a>
         </div>
     </div>
 </body>
