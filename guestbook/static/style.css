@@ -1,0 +1,68 @@
+/* Основные стили */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+/* Сообщения — чередование фона (задание А) */
+.message {
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+.message-even {
+    background-color: #ffffff;
+}
+.message-odd {
+    background-color: #f9f9f9;
+}
+
+.message strong {
+    color: #007bff;
+}
+.message small {
+    color: gray;
+    font-size: 0.8em;
+}
+
+.add-form {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid #eee;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0 15px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #0056b3;
+}
