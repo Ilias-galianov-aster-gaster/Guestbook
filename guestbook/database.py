@@ -4,13 +4,11 @@ from datetime import date
 DATABASE = 'guestbook.db'
 
 def get_db_connection():
-    """Устанавливает соединение с БД, возвращает объект connection."""
     conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row  # чтобы обращаться к колонкам по имени
+    conn.row_factory = sqlite3.Row
     return conn
 
 def init_db():
-    """Создаёт таблицу messages, если её нет."""
     conn = get_db_connection()
     conn.execute('''
         CREATE TABLE IF NOT EXISTS messages (
@@ -24,9 +22,6 @@ def init_db():
     conn.close()
 
 def get_all_messages():
-    """
-    Возвращает все сообщения, отсортированные от новых к старым.
-    """
     conn = get_db_connection()
     messages = conn.execute(
         'SELECT * FROM messages ORDER BY created_at DESC, id DESC'
@@ -35,10 +30,6 @@ def get_all_messages():
     return messages
 
 def add_message(name, message):
-    """
-    Добавляет новое сообщение в базу.
-    Дата создаётся автоматически (сегодняшняя).
-    """
     conn = get_db_connection()
     conn.execute(
         'INSERT INTO messages (name, message, created_at) VALUES (?, ?, ?)',

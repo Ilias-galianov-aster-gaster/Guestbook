@@ -20,7 +20,26 @@ h1 {
     color: #333;
 }
 
-/* Сообщения — чередование фона (задание А) */
+/* Уведомления (задания В и Г) */
+.notification {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: bold;
+}
+.notification.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+.notification.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Сообщения – чередование фона (задание А) */
 .message {
     padding: 10px 0;
     border-bottom: 1px solid #ddd;
@@ -53,6 +72,12 @@ input, textarea {
     border: 1px solid #ddd;
     border-radius: 4px;
     box-sizing: border-box;
+}
+
+/* Подсветка ошибок (задание Г) */
+.input-error {
+    border: 2px solid red !important;
+    background-color: #ffe6e6;
 }
 
 button {
